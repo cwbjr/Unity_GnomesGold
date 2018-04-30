@@ -5,7 +5,7 @@ using UnityEngine;
 // BEGIN 2d_gnome
 public class Gnome : MonoBehaviour {
 
-	// The object that the camera should follow.
+
 	public Transform cameraFollowTarget;
 
 	public Rigidbody2D ropeBody;
@@ -84,13 +84,13 @@ public class Gnome : MonoBehaviour {
 
 		dead = true;
 
-		// find all child objects, and randomly disconnect their joints
+
 		foreach (BodyPart part in GetComponentsInChildren<BodyPart>()) {
 
 			switch (type) {
 
 			case DamageType.Burning:
-				// 1 in 3 chance of burning
+
 				bool shouldBurn = Random.Range (0, 2) == 0;
 				if (shouldBurn) {
 					part.ApplyDamageSprite(type);
@@ -98,31 +98,27 @@ public class Gnome : MonoBehaviour {
 				break;
 
 			case DamageType.Slicing:
-				// Slice damage always applies a damage sprite
+
 				part.ApplyDamageSprite (type);
 
 				break;
 			}
 
-			// 1 in 3 chance of separating from body
+
 			bool shouldDetach = Random.Range (0, 2) == 0;
 
 			if (shouldDetach) {
 
-				// Make this object remove its rigidbody and 
-				// collider after it comes to rest
+			
 				part.Detach ();
 
-				// If we're separating, and the damage type was 
-				// Slicing, add a blood fountain
 
 				if (type == DamageType.Slicing) {
 
 					if (part.bloodFountainOrigin != null && 
 						bloodFountainPrefab != null) {
 
-						// Attach a blood fountain for
-						// this detached part
+				
 						GameObject fountain =  Instantiate(
 							bloodFountainPrefab, 
 							part.bloodFountainOrigin.position, 
@@ -136,7 +132,7 @@ public class Gnome : MonoBehaviour {
 					}
 				}
 
-				// Disconnect this object
+
 				var allJoints = part.GetComponentsInChildren<Joint2D>();
 				foreach (Joint2D joint in allJoints) {
 					Destroy (joint);
@@ -144,7 +140,7 @@ public class Gnome : MonoBehaviour {
 			}
 		}
 
-		// Add a Remove-After-Delay component to this object
+
 		var remove = gameObject.AddComponent<RemoveAfterDelay>();
 		remove.delay = delayBeforeRemoving;
 
@@ -154,15 +150,15 @@ public class Gnome : MonoBehaviour {
 
 	IEnumerator ReleaseGhost() {
 
-		// No ghost prefab? Bail out.
+
 		if (ghostPrefab == null) {
 			yield break;
 		} 
 
-		// Wait for delayBeforeReleasingGhost seconds
+
 		yield return new WaitForSeconds(delayBeforeReleasingGhost);
 
-		// Add the ghost		
+		
 		Instantiate(
 			ghostPrefab, 
 			transform.position, 
